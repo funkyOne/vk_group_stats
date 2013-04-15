@@ -33,3 +33,8 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# local data
+vk.cfg
+vk.db
+vk.shelf

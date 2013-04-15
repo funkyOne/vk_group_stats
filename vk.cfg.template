@@ -1,0 +1,18 @@
+[main]
+shelve_file = vk.shelf
+db_name = vk.db
+
+[vk]
+api_method_url_base  = https://api.vk.com/method/
+app_id = 
+app_secret = 
+username = 
+password = 
+
+[mail]
+recipients = 'admin@yourmail.com'
+smtp_host=
+smtp_port=587
+smtp_mode=tls
+smtp_login=
+smtp_password=
