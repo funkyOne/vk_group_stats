@@ -34,7 +34,6 @@ def main():
 	api = ApiClient()
 
 	current_members_list = api.get_members()
-
 	last_members_list = get_current_members(settings['db_name'])
 
 	new_users = list(set(current_members_list) - set(last_members_list))
@@ -70,6 +69,8 @@ def init_db(db_name):
 			);
 
 			CREATE INDEX IF NOT EXISTS main.events_by_time ON events (happened_at, event_type);
+
+			CREATE INDEX IF NOT EXISTS main.current_users ON users (is_in_group DESC);
 			""")
 
 	# current_members = read_members()	
@@ -125,7 +126,7 @@ def read_settings():
 		'smtp_mode':config.get('mail','smtp_mode'),
 		'smtp_login':config.get('mail','smtp_login'),
 		'smtp_password':config.get('mail','smtp_password'),
-		'recipients' : config.get('mail','recipients').split(','),
+		'recipients' : config.get('mail','recipients').split(', '),
 	}
 
  	return settings
@@ -165,7 +166,7 @@ def compose_mail(settings, joined, left):
 	sender=(u'Питон', 'robot@stalobaloba.ru')
 	recipients=settings['recipients']
 
-	subject=u'Отчет о группе'
+	subject=u'{0} in, {1} out'.format(len(joined),len(left))
 	text_content=u'' # u'Bonjour aux Fran\xe7ais'
 	encoding='utf-8'
 
@@ -176,7 +177,7 @@ def compose_mail(settings, joined, left):
 	last_run = unshelve_or_none('last_run', settings['shelve_file'])
 	put_to_shelve('last_run', now, settings['shelve_file'])
 
-	datestring = '{1:%d/%m/%y}'.format(last_run, now)
+	datestring = '{0:%d/%m/%y}'.format(now)
 
 	if last_run:
 		delta = now - last_run
